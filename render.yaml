@@ -1,0 +1,8 @@
+services:
+  - type: static
+    name: webhook-catcher
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: .
+    autoDeploy: true
+    branch: main
