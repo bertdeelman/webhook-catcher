@@ -3,8 +3,7 @@ services:
     name: webhook-catcher
     env: node
     plan: free
-    buildCommand: npm run build
+    buildCommand: npm install
     startCommand: npm start
-    staticPublishPath: public
     autoDeploy: true
-    branch: main
+    branch
