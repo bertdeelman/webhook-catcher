@@ -1,36 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Webhook Catcher</title>
-  <link href="output.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-[#34495E] flex flex-col">
+<body class="bg-gray-100 text-gray-900">
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Webhook Catcher</h1>
 
-  <header class="bg-[#B32428] shadow p-4 text-center text-white text-2xl font-bold">
-    Webhook Catcher
-  </header>
+    <button id="toggleBtn" class="mb-6 px-4 py-2 bg-blue-500 text-white rounded">Loading...</button>
 
-  <main class="flex flex-1 overflow-hidden text-white">
-    <aside class="w-1/3 bg-[#2C3E50] border-r border-[#B32428] overflow-y-auto">
-      <div class="p-4 font-semibold text-[#B32428]">Received Webhooks</div>
-      <ul id="webhookList" class="divide-y divide-[#B32428]/30"></ul>
-    </aside>
+    <div id="events" class="space-y-4"></div>
+  </div>
 
-    <section class="flex-1 p-6 overflow-y-auto">
-      <h2 class="text-xl font-semibold text-[#B32428] mb-4">Webhook Details</h2>
-      <pre id="webhookDetail" class="whitespace-pre-wrap font-mono text-sm text-white bg-[#2C3E50] p-4 border border-[#B32428] rounded min-h-[200px]">
-No webhook selected...
-      </pre>
-      <button id="copyBtn" class="mt-4 bg-[#B32428] text-white px-4 py-2 rounded hover:bg-red-700 hidden">📋 Copy JSON</button>
-    </section>
-  </main>
+  <script>
+    async function fetchToggleStatus() {
+      const res = await fetch('/toggle', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('toggleBtn').innerText = data.acceptingWebhooks ? 'Catcher: ON' : 'Catcher: OFF';
+    }
 
-  <footer class="bg-[#2C3E50] text-center text-sm text-gray-300 py-4 border-t border-[#B32428]">
-    Made with ❤️ for developers — <a href="https://render.com" class="text-[#B32428] hover:underline">Render-ready</a>
-  </footer>
+    async function toggleCatcher() {
+      await fetchToggleStatus();
+    }
 
-  <script src="script.js"></script>
+    document.getElementById('toggleBtn').addEventListener('click', toggleCatcher);
+
+    async function fetchEvents() {
+      const res = await fetch('/events');
+      const data = await res.json();
+
+      const eventsDiv = document.getElementById('events');
+      eventsDiv.innerHTML = '';
+
+      data.forEach(event => {
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-white rounded shadow';
+        div.innerHTML = `
+          <div><strong>Customer:</strong> ${event.customer}</div>
+          <div><strong>Timestamp:</strong> ${event.timestamp}</div>
+          <pre class="bg-gray-200 p-2 mt-2 rounded">${JSON.stringify(event.body, null, 2)}</pre>
+        `;
+        eventsDiv.appendChild(div);
+      });
+    }
+
+    setInterval(fetchEvents, 5000);
+    fetchEvents();
+    fetchToggleStatus();
+  </script>
 </body>
 </html>

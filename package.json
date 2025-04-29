@@ -1,18 +1,12 @@
 {
-  "name": "webhook-catcher-server",
+  "name": "webhook-catcher",
   "version": "1.0.0",
-  "description": "Webhook.site clone with Node.js backend",
+  "description": "Simple webhook catcher",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "npx tailwindcss -i ./style.css -o ./public/output.css"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.3.2",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.21"
   }
 }
